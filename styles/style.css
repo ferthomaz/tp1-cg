@@ -1,0 +1,30 @@
+* {
+    padding: 0;
+    margin: 0;
+
+    box-sizing: border-box;
+}
+
+:root {
+    --bc-body: rgb(137, 139, 165);
+
+    font-size: 62.5%;
+}
+
+body {
+    background-color: var(--bc-body);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    height: auto;
+    border: 0;
+    padding: 0;
+}
