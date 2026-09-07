@@ -8,6 +8,16 @@ import {
 import { startGameLoop } from "./core/game-loop.js";
 import { onCanvasClick, isPointInsideRectangle } from "./core/input.js";
 
+const playBtn = document.querySelector("#play-button");
+
+playBtn.addEventListener('click', startGame);   
+
+function startGame (){
+    document.querySelector(".menu").classList.toggle('hide')
+    document.querySelector(".game").classList.toggle('hide')
+}
+
+
 async function loadShaderSource(fileName) {
     
     const url = new URL(`./shaders/${fileName}`, import.meta.url);

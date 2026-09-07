@@ -6,18 +6,53 @@
 }
 
 :root {
-    --bc-body: rgb(137, 139, 165);
+
 
     font-size: 62.5%;
 }
 
 body {
-    background-color: var(--bc-body);
+    height: 100vh;
+}
 
+.menu {
+    background-color: #FFFFFF;
+
+    margin: 0 auto ;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+button {
+  font-family: 'DM sans', sans-serif;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  color: #FFFFFF;
+
+
+  width: 17.4rem;
+  height: 5.2rem;
+
+  background-color: #307233;
+  border-radius: .4rem;
+  border-style: none;
+
+  margin-top: 5rem;
+
+}
+
+.game {
     display: flex;
     justify-content: center;
     align-items: center;
-  
+    background-color: rgb(137, 139, 165);
+}
+
+.hide {
+  display: none;
 }
 
 canvas {
