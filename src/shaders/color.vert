@@ -3,12 +3,9 @@
 
 in vec2 a_position;
 
-uniform vec2 u_resolution;
+uniform mat3 u_matrix;
 
 void main() {
-    
-  float x = (a_position.x / u_resolution.x) * 2.0 - 1.0;
-  float y = 1.0 - (a_position.y / u_resolution.y) * 2.0;
-
-  gl_Position = vec4(x, y, 0.0, 1.0);
+  vec3 position = u_matrix * vec3(a_position, 1.0);
+  gl_Position = vec4(position.xy, 0.0, 1.0);
 }

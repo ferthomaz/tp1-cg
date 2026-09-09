@@ -1,4 +1,3 @@
-// update altera o estado; render desenha o estado atual.
 export function startGameLoop(update, render) {
     let previousTime = null;
     let frameId = null;
