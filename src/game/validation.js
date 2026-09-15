@@ -1,4 +1,3 @@
-//valida alguns conceitos pra nao ter que colocar um monte de if em tudo
 export function number(value, name, minimum = 0, exclusive = false) {
     if (!Number.isFinite(value) || (exclusive ? value <= minimum : value < minimum)) {
         throw new TypeError(`${name} must be finite and ${exclusive ? 'greater than' : 'at least'} ${minimum}.`);
