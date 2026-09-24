@@ -1,10 +1,6 @@
 export const GAME_RULES = Object.freeze({
     fixedStep: 1 / 60,
     clickDamage: 1,
-    initialHandSize: 4,
-    cardsPerDraw: 4,
-    maxHandSize: 8,
-    drawInterval: 60,
     heroMaxHp: 30,
     heroSpeedMultiplier: 2.5,
     heroRespawnTime: 150,
