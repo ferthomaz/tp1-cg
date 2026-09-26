@@ -2,26 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tower Defense</title>
+    <title>Off Tower</title>
+    <link rel="icon" type="image/png" href="./assets/sprites/hud/hud_tower_health_sprite.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles/style.css">
     <script type="module" src="./src/main.js"></script>
 </head>
 <body>
-
     <div class="menu">
         <h1>Off tower</h1>
         <button id="play-button">Play</button>
     </div>
-
     <div class="game hide">
-        <p id="status">Carregando...</p>
-        <canvas class="game-canvas" width="1280" height="720"></canvas>
-    </div> 
-
-     <div class="game-over hide">
+        <p id="status" class="screen-reader-only" aria-live="polite"></p>
+        <div class="game-stage">
+            <canvas class="game-canvas" width="1280" height="720" tabindex="0"
+                aria-label="Off Tower. Click enemies to attack. Select a building and use its Upgrade, Repair or Rebuild buttons. The HUD shows hero and castle health."></canvas>
+        </div>
+    </div>
+    <div class="game-over hide">
+        <h1>Castle destroyed</h1>
         <button id="return-menu-btn">Return to menu</button>
-    </div> 
-    
+    </div>
+    <p id="webgl-error" role="alert" hidden></p>
 </body>
 </html>

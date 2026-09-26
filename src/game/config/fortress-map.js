@@ -4,7 +4,7 @@ export const MAP_TILE_SIZE = 32;
 
 function wall(id, x, y, variant) {
     return { id, maxHp: 30, position: { x, y }, variant };
-}
+}   
 
 function wallRun(id, from, to, variant) {
     const count = Math.max(Math.abs(to.x - from.x), Math.abs(to.y - from.y)) / MAP_TILE_SIZE;
