@@ -9,7 +9,6 @@ export function createLayout() {
     };
 }
 
-/** Fit the map in the fixed game area. Moving entities never change its center or scale. */
 export function createCamera(snapshot, viewport) {
     const points = [...snapshot.structures.map(item => item.position), ...snapshot.paths.flatMap(path => path.waypoints)];
     if (snapshot.hero) points.push(snapshot.hero.homePosition ?? snapshot.hero.position);
@@ -17,8 +16,7 @@ export function createCamera(snapshot, viewport) {
     const maxX = Math.max(...points.map(point => point.x)) + 35;
     const minY = Math.min(...points.map(point => point.y)) - 48;
     const maxY = Math.max(...points.map(point => point.y)) + 48;
-    // Reserve vertical breathing room for the health HUD while drawing the
-    // forest across the whole screen. No input can shift this fitted projection.
+
     const scale = Math.max(0.01, Math.min(Math.max(1, viewport.width - 24) / (maxX - minX),
         Math.max(1, viewport.height - 100) / (maxY - minY)));
     const offsetX = viewport.x + viewport.width / 2 - (minX + maxX) / 2 * scale;
@@ -30,7 +28,6 @@ export function createCamera(snapshot, viewport) {
     };
 }
 
-// Routes can share a castle and an inward approach. Draw each only once.
 export function createRouteGeometry(paths) {
     const entries = new Map();
     const segments = new Map();

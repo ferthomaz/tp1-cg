@@ -25,17 +25,7 @@ function checkSegments(segments) {
     if (!Number.isInteger(segments) || segments < 3 || segments > 512) throw new RangeError('segments must be an integer from 3 to 512.');
 }
 
-/**
- * An immediate 2D API backed by a shared unit square and model/projection matrices.
- *
- * USAGE: beginFrame -> drawRect/drawSprite/drawText/... -> endFrame.
- * All coordinates are CSS pixels, origin TOP LEFT; X goes right and Y goes down.
- * Each call draws immediately in submission order. The GPU transforms the
- * shared square for sprites, rectangles and thick lines.
- *
- * The application owns the animation loop and context-loss/restoration policy.
- * Do not mix external gl.* drawing with this renderer on the same context.
- */
+
 export class Renderer2D {
     #device;
     #clip = null;
@@ -65,9 +55,7 @@ export class Renderer2D {
         }
     }
 
-    /** Exposed for diagnostics/context-loss tools, not for ordinary drawing. */
     get gl() { return this.#device.gl; }
-    /** A detached snapshot of this frame's submissions (not an FPS benchmark). */
     get stats() { return { ...this.#stats }; }
 
     #requireAlive() {
@@ -78,11 +66,6 @@ export class Renderer2D {
         if (!this.#frameOpen) throw new Error('Call beginFrame() before drawing, clipping, or endFrame().');
     }
 
-    /**
-     * Synchronize CSS/backing sizes BEFORE computing layout. beginFrame also
-     * calls this automatically. Never resize in the middle of an open frame.
-     * width/height remain CSS dimensions even on a high-DPI display.
-     */
     resize(pixelRatio = globalThis.devicePixelRatio || 1) {
         this.#requireAlive();
         if (this.#frameOpen) throw new Error('Resize before beginFrame(), not while a frame is open.');
@@ -95,7 +78,6 @@ export class Renderer2D {
         return this;
     }
 
-    /** Clear the canvas and start a frame. Pair every call with endFrame. */
     beginFrame({ clearColor = BACKGROUND, pixelRatio = globalThis.devicePixelRatio || 1 } = {}) {
         this.#requireAlive();
         if (this.#frameOpen) throw new Error('The previous frame is still open. Call endFrame() first.');
@@ -109,7 +91,6 @@ export class Renderer2D {
         return this;
     }
 
-    /** Leave no clip active between frames. */
     endFrame() {
         this.#requireFrame();
         this.#device.setClip(null);
@@ -130,14 +111,12 @@ export class Renderer2D {
         this.#stats.triangles += 2;
     }
 
-    /** Filled rectangle. Zero/negative sizes intentionally draw nothing (HP bars). */
     drawRect({ x, y, width, height, color = WHITE }) {
         this.#requireFrame(); checkRect({ x, y, width, height }); checkColor(color);
         this.#quad(x, y, width, height, color);
         return this;
     }
 
-    /** Border inside the supplied rectangle, measured in CSS pixels. */
     drawOutline({ x, y, width, height, color = WHITE, thickness = 1 }) {
         this.#requireFrame(); checkRect({ x, y, width, height }); finiteValues({ thickness }); checkColor(color);
         if (width <= 0 || height <= 0 || thickness <= 0) return this;
@@ -149,7 +128,6 @@ export class Renderer2D {
         return this;
     }
 
-    /** Thick segment; endpoints use x1/y1 and x2/y2, not rectangle dimensions. */
     drawLine({ x1, y1, x2, y2, thickness = 1, color = WHITE }) {
         this.#requireFrame(); finiteValues({ x1, y1, x2, y2, thickness }); checkColor(color);
         const length = Math.hypot(x2 - x1, y2 - y1);
@@ -158,26 +136,22 @@ export class Renderer2D {
         return this;
     }
 
-    /** Three named points, so argument order is visible at the call site. */
     drawTriangle({ a, b, c, color = WHITE }) {
         this.#requireFrame();
         if (!a || !b || !c) throw new TypeError('drawTriangle needs points a, b, and c.');
         finiteValues({ ax: a.x, ay: a.y, bx: b.x, by: b.y, cx: c.x, cy: c.y }); checkColor(color);
-        // Map local (0,0), (1,0), (0,1) to a,b,c; shader discards the other half.
         const bx = b.x - a.x, by = b.y - a.y, cx = c.x - a.x, cy = c.y - a.y;
         if (bx * cy - by * cx === 0) return this;
         this.#draw(new Float32Array([bx, by, 0, 0, cx, cy, 0, 0, 0, 0, 1, 0, a.x, a.y, 0, 1]), color, null, null, 2);
         return this;
     }
 
-    /** Analytic circle. segments is accepted for API compatibility; no tessellation. */
     drawCircle({ x, y, radius, color = WHITE, segments = 64 }) {
         this.#requireFrame(); finiteValues({ x, y, radius }); checkColor(color); checkSegments(segments);
         if (radius > 0) this.#draw(model(x - radius, y - radius, radius * 2, radius * 2), color, null, null, 1);
         return this;
     }
 
-    /** Circular outline centered at x/y; useful for tower range indicators. */
     drawRing({ x, y, radius, color = WHITE, thickness = 1, segments = 64 }) {
         this.#requireFrame(); finiteValues({ x, y, radius, thickness }); checkColor(color); checkSegments(segments);
         if (radius <= 0 || thickness <= 0) return this;
@@ -186,13 +160,6 @@ export class Renderer2D {
         return this;
     }
 
-    /**
-     * Draw one zero-based atlas cell. Omit atlas to use the constructor's atlas.
-     * Omit width/height to use the cell's native pixel size. UV uniforms choose
-     * the atlas region without changing the shared geometry.
-     * An optional source rectangle (whole image pixels) selects a UI frame piece
-     * instead of a grid cell, keeping decorative corners intact when resizing.
-     */
     drawSprite({ atlas = this.atlas, column = 0, row = 0, source = null, x, y,
         width = source?.width ?? atlas?.tileWidth, height = source?.height ?? atlas?.tileHeight, tint = WHITE,
         flipX = false, rotation = 0, originX = 0.5, originY = 0.5 }) {
@@ -208,7 +175,6 @@ export class Renderer2D {
         return this;
     }
 
-    /** HTML text in the CSS layer above the canvas; scale 1 is 12px. */
     drawText({ text, x, y, scale = 2, color = WHITE, align = 'left', maxWidth }) {
         this.#requireFrame(); finiteValues({ x, y, scale }); checkColor(color);
         if (!['left', 'center', 'right'].includes(align)) throw new RangeError('Text align must be left, center, or right.');
@@ -219,10 +185,7 @@ export class Renderer2D {
     clearText() { this.text.clear(); }
     coverText(rect) { this.text.cover(rect); }
 
-    /**
-     * Replace the clip in CSS pixels. null means the whole canvas. Clipping only
-     * affects pixels: UI hit-test regions must be clipped separately by the view.
-     */
+
     setClip(rect = null) {
         this.#requireFrame();
         if (rect !== null) checkRect(rect);
@@ -231,11 +194,7 @@ export class Renderer2D {
         return this;
     }
 
-    /**
-     * Nested, synchronous clipping with automatic restoration even if drawing
-     * throws. The new region intersects the current region; it cannot expand it.
-     * Example: renderer.withClip(viewport, () => drawWorld());
-     */
+ 
     withClip(rect, draw) {
         this.#requireFrame(); checkRect(rect);
         if (typeof draw !== 'function') throw new TypeError('withClip needs a synchronous drawing callback.');
@@ -246,13 +205,11 @@ export class Renderer2D {
         finally { this.setClip(previous); }
     }
 
-    /** Pass a MouseEvent/PointerEvent; get CSS-space coordinates or null if hidden. */
     screenToCanvas({ clientX, clientY }) {
         finiteValues({ clientX, clientY });
         return clientToCanvas(this.canvas, clientX, clientY, this.width, this.height);
     }
 
-    /** Release all owned GPU objects. There are no listeners or timers here. */
     dispose() {
         if (this.#disposed) return;
         this.#disposed = true;

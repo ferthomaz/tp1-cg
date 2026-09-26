@@ -8,9 +8,7 @@ export const STRUCTURE_SHEET = Object.freeze({
     tileSize: 32, columns: 8, rows: 4,
 });
 
-// Zero-based cells. Row two shares exactly the same column as the living sprite.
 export function structureSprite(structure, { selected = false } = {}) {
-    // Cell 0-2: column zero, row two, the construction-site artwork.
     if (structure.work) return { column: 0, row: 2 };
     const row = structure.hp <= 0 ? 1 : 0;
     switch (structure.kind) {
@@ -27,7 +25,6 @@ export function structureSprite(structure, { selected = false } = {}) {
     }
 }
 
-/** Load the existing artwork and verify the layout expected by structureSprite. */
 export async function loadStructureSheet() {
     const image = await loadImage(STRUCTURE_SHEET.url);
     const { tileSize, columns, rows } = STRUCTURE_SHEET;
