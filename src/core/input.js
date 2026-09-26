@@ -29,3 +29,10 @@ export function isPointInsideRectangle(point, rectangle) {
         point.y <= rectangle.y + rectangle.height
     );
 }
+
+export function bindEnemyClicks(canvas, game, pickEnemy) {
+    return onCanvasClick(canvas, point => {
+        const enemyId = pickEnemy(point, game.getSnapshot());
+        if (enemyId != null) game.clickEnemy(enemyId);
+    });
+}
