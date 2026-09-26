@@ -14,12 +14,23 @@
 
 ## Media kit
 
-[Visão geral do cenário e das defesas]
+<p align="center">
+  <img src="assets/images/geral.png" width="80%">
+  <br>
+  <i>Visão geral do cenário e das defesas</i>
+</p>
 
+<p align="center">
+  <img src="assets/images/tiro.png" width="80%">
+  <br>
+  <i>Torres defendendo a cidade durante uma onda de inimigos</i>
+</p>
 
-[Torres defendendo a cidade durante uma onda de inimigos]
-
-[Heroi trabalhando]
+<p align="center">
+  <img src="assets/images/heroi.png" width="80%">
+  <br>
+  <i>Herói atuando na manutenção</i>
+</p>
 
 ## Opcionais
 
